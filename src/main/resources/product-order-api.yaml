@@ -38,10 +38,10 @@ host: serverRoot
 basePath: /tmf-api/productOrderingManagement/v4/
 schemes:
   - https
-consumes:
-  - application/json;charset=utf-8
-produces:
-  - application/json;charset=utf-8
+#consumes:
+#  - application/json;charset=utf-8
+#produces:
+#  - application/json;charset=utf-8
 tags:
   - name: productOrder
   - name: cancelProductOrder

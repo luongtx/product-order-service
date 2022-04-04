@@ -44,12 +44,7 @@ public class ProductOrderApiController implements ProductOrderApi {
     }
 
     public ResponseEntity<ProductOrder> createProductOrder(@ApiParam(value = "The ProductOrder to be created", required = true) @Valid @RequestBody ProductOrderCreate productOrder) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            return new ResponseEntity<ProductOrder>(new ProductOrder(), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<ProductOrder>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<ProductOrder>(new ProductOrder(), HttpStatus.OK);
     }
 
     public ResponseEntity<Void> deleteProductOrder(@ApiParam(value = "Identifier of the ProductOrder", required = true) @PathVariable("id") String id) {
@@ -58,37 +53,22 @@ public class ProductOrderApiController implements ProductOrderApi {
     }
 
     public ResponseEntity<List<ProductOrder>> listProductOrder(@ApiParam(value = "Comma-separated properties to be provided in response") @Valid @RequestParam(value = "fields", required = false) String fields, @ApiParam(value = "Requested index for start of resources to be provided in response") @Valid @RequestParam(value = "offset", required = false) Integer offset, @ApiParam(value = "Requested number of resources to be provided in response") @Valid @RequestParam(value = "limit", required = false) Integer limit) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            return new ResponseEntity<List<ProductOrder>>(Arrays.asList(new ProductOrder()), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<List<ProductOrder>>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<List<ProductOrder>>(Arrays.asList(new ProductOrder()), HttpStatus.OK);
     }
 
     public ResponseEntity<ProductOrder> patchProductOrder(@ApiParam(value = "Identifier of the ProductOrder", required = true) @PathVariable("id") String id, @ApiParam(value = "The ProductOrder to be updated", required = true) @Valid @RequestBody ProductOrderUpdate productOrder) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            return new ResponseEntity<>(new ProductOrder(), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<ProductOrder>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(new ProductOrder(), HttpStatus.OK);
     }
 
     public ResponseEntity<ProductOrder> retrieveProductOrder(@ApiParam(value = "Identifier of the ProductOrder", required = true) @PathVariable("id") String id, @ApiParam(value = "Comma-separated properties to provide in response") @Valid @RequestParam(value = "fields", required = false) String fields) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-//            return new ResponseEntity<>(new ProductOrder(), HttpStatus.OK);
-            ProductOfferingRef productOfferingRef = productOfferingClient.retrieveProductOffering(id, fields);
-            ProductOrder productOrder = new ProductOrder();
-            productOrder.setId(productOfferingRef.getId());
-            productOrder.setHref(productOfferingRef.getHref());
-            productOrder.setBaseType(productOfferingRef.getBaseType());
-            productOrder.setSchemaLocation(productOfferingRef.getSchemaLocation());
-            productOrder.setType(productOfferingRef.getType());
-        }
-
-        return new ResponseEntity<ProductOrder>(HttpStatus.NOT_IMPLEMENTED);
+        ProductOfferingRef productOfferingRef = productOfferingClient.retrieveProductOffering(id, fields);
+        ProductOrder productOrder = new ProductOrder();
+        productOrder.setId(productOfferingRef.getId());
+        productOrder.setHref(productOfferingRef.getHref());
+        productOrder.setBaseType(productOfferingRef.getBaseType());
+        productOrder.setSchemaLocation(productOfferingRef.getSchemaLocation());
+        productOrder.setType(productOfferingRef.getType());
+        return new ResponseEntity<ProductOrder>(productOrder, HttpStatus.OK);
     }
 
 }
