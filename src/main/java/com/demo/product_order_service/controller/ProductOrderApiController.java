@@ -1,6 +1,8 @@
 package com.demo.product_order_service.controller;
 
 import com.demo.product_order_service.api.ProductOrderApi;
+import com.demo.product_order_service.integration.ProductOfferingClient;
+import com.demo.product_order_service.model.ProductOfferingRef;
 import com.demo.product_order_service.model.ProductOrder;
 import com.demo.product_order_service.model.ProductOrderCreate;
 import com.demo.product_order_service.model.ProductOrderUpdate;
@@ -31,6 +33,9 @@ public class ProductOrderApiController implements ProductOrderApi {
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
+
+    @Autowired
+    ProductOfferingClient productOfferingClient;
 
     @Autowired
     public ProductOrderApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -73,7 +78,14 @@ public class ProductOrderApiController implements ProductOrderApi {
     public ResponseEntity<ProductOrder> retrieveProductOrder(@ApiParam(value = "Identifier of the ProductOrder", required = true) @PathVariable("id") String id, @ApiParam(value = "Comma-separated properties to provide in response") @Valid @RequestParam(value = "fields", required = false) String fields) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            return new ResponseEntity<>(new ProductOrder(), HttpStatus.OK);
+//            return new ResponseEntity<>(new ProductOrder(), HttpStatus.OK);
+            ProductOfferingRef productOfferingRef = productOfferingClient.retrieveProductOffering(id, fields);
+            ProductOrder productOrder = new ProductOrder();
+            productOrder.setId(productOfferingRef.getId());
+            productOrder.setHref(productOfferingRef.getHref());
+            productOrder.setBaseType(productOfferingRef.getBaseType());
+            productOrder.setSchemaLocation(productOfferingRef.getSchemaLocation());
+            productOrder.setType(productOfferingRef.getType());
         }
 
         return new ResponseEntity<ProductOrder>(HttpStatus.NOT_IMPLEMENTED);
