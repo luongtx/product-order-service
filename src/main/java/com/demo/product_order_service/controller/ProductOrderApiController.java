@@ -7,6 +7,7 @@ import com.demo.product_order_service.model.ProductOrder;
 import com.demo.product_order_service.model.ProductOrderCreate;
 import com.demo.product_order_service.model.ProductOrderUpdate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +62,20 @@ public class ProductOrderApiController implements ProductOrderApi {
     }
 
     public ResponseEntity<ProductOrder> retrieveProductOrder(@ApiParam(value = "Identifier of the ProductOrder", required = true) @PathVariable("id") String id, @ApiParam(value = "Comma-separated properties to provide in response") @Valid @RequestParam(value = "fields", required = false) String fields) {
-        ProductOfferingRef productOfferingRef = productOfferingClient.retrieveProductOffering(id, fields);
         ProductOrder productOrder = new ProductOrder();
-        productOrder.setId(productOfferingRef.getId());
-        productOrder.setHref(productOfferingRef.getHref());
-        productOrder.setBaseType(productOfferingRef.getBaseType());
-        productOrder.setSchemaLocation(productOfferingRef.getSchemaLocation());
-        productOrder.setType(productOfferingRef.getType());
+        ProductOfferingRef productOfferingRef = null;
+        try {
+            productOfferingRef = productOfferingClient.retrieveProductOffering(id, fields);
+        } catch (FeignException e) {
+            log.error(e.getLocalizedMessage());
+        }
+        if (productOfferingRef != null) {
+            productOrder.setId(productOfferingRef.getId());
+            productOrder.setHref(productOfferingRef.getHref());
+            productOrder.setBaseType(productOfferingRef.getBaseType());
+            productOrder.setSchemaLocation(productOfferingRef.getSchemaLocation());
+            productOrder.setType(productOfferingRef.getType());
+        }
         return new ResponseEntity<ProductOrder>(productOrder, HttpStatus.OK);
     }
 
